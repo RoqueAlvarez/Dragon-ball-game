@@ -1,0 +1,18 @@
+/* configuracion de la imagen de fondo a pantalla completa */
+/* le puse fixed para que si bajamos la pagina el fondo se quede quieto y no se repita */
+body {
+    background-image: url('../img/Arena.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* panel semitransparente para que los controles se puedan leer sobre el fondo */
+/* le meti un rgba con 0.85 de opacidad pa que se alcance a ver tantito el fondo pero el texto sea legible */
+.panel-registro {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+}

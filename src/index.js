@@ -160,7 +160,9 @@ const comprobarInicio = () => {
             html: "EN <b>10</b> segundos<br>¡Alerta, prepárense para luchar!",
             timer: 10000,
             timerProgressBar: true,
-            allowOutsideClick: false, // para que no puedan darle click afuera y quitarlo por accidente
+            allowOutsideClick: false, // para que no puedan darle click afuera
+            allowEscapeKey: false, // evita que se lo salten con la tecla de escape
+            showConfirmButton: false, // quita el boton de ok para que no le den enter ni tab
             didOpen: () => {
                 Swal.showLoading();
                 const textoTemporizador = Swal.getPopup().querySelector("b");
@@ -269,11 +271,40 @@ const mostrarDerrota = (imgGanador, nombreGanador) => {
         imageWidth: 250,
         imageHeight: 250,
         backdrop: `rgba(0,0,0,0.8)`, // le oscurecemos la pantallita de atras
-        confirmButtonText: "Volver a jugar",
-        allowOutsideClick: false
+        showCancelButton: true, // boton extra para decidir si quiere menu o revancha
+        confirmButtonText: "Revancha", // si le da aqui, juega de nuevo con los mismos monos
+        cancelButtonText: "Ir al menú", // si le da aca, reiniciamos todo el pex
+        allowOutsideClick: false,
+        allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            location.reload(); // recargamos la web asi de f5 de a gratis para resetear el juego
+            // revancha: simplemente volvemos a instanciar los objetos para que tengan la vida llena otra vez
+            objJugador1 = new Acciones(objJugador1.getNombre());
+            objJugador2 = new Acciones(objJugador2.getNombre());
+            enfriamientoEsp1 = 2;
+            enfriamientoEsp2 = 2;
+            actualizarBarras();
+            gestionarTurno(1);
+        } else {
+            // menu: escondemos la arena, mostramos el registro y limpiamos las variables a mano
+            document.getElementById("iniciar_juego").classList.add("d-none");
+            document.getElementById("registro_juego").classList.remove("d-none");
+            
+            jugadoresListos = 0;
+            personajeJ1 = "";
+            personajeJ2 = "";
+            
+            // limpiamos la pantalla del jugador 1
+            inputAlias1.disabled = false;
+            inputAlias1.value = "";
+            panelJugador1.classList.remove("d-none");
+            remover_seleccion([...panelJugador1.querySelectorAll("img")], "bg-danger");
+            
+            // limpiamos la pantalla del jugador 2
+            inputAlias2.disabled = false;
+            inputAlias2.value = "";
+            panelJugador2.classList.remove("d-none");
+            remover_seleccion([...panelJugador2.querySelectorAll("img")], "bg-primary");
         }
     });
 }
@@ -289,13 +320,16 @@ document.getElementById("btn_atk_j1").addEventListener('click', async () => {
     // le manda el ataque
     objJugador1.atkBasico(objJugador2);
     // el async / await hace que el script se espere hasta que acabe el tiempo del popup pa que siga fluyendo
+    // le puse allowEscapeKey y showConfirmButton en falso pa que no se salten la animacion de los putazos
     await Swal.fire({
         title: ataques[personajeJ1]["atk1"],
         imageUrl: `./public/img/DB/${personajeJ1}/basico.png`,
         imageWidth: 250,
         backdrop: ataques[personajeJ1]["color"],
         timer: 1500, // tarda segundo y medio en quitarse solo
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras(); // refrezcamos numeros visuales
     // el if (!revisarGanador) dice "si NO acabo el juego, pasale el turno al bato 2"
@@ -316,7 +350,9 @@ document.getElementById("btn_esp_j1").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ1]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     if (!revisarGanador()) gestionarTurno(2);
@@ -341,7 +377,9 @@ document.getElementById("btn_ermi_j1").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ1]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     gestionarTurno(2);
@@ -355,7 +393,9 @@ document.getElementById("btn_ki_j1").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ1]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     gestionarTurno(2); // no ataco, solo cargo, tons pasa turno
@@ -376,7 +416,9 @@ document.getElementById("btn_atk_j2").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ2]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     if (!revisarGanador()) gestionarTurno(1);
@@ -395,7 +437,9 @@ document.getElementById("btn_esp_j2").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ2]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     if (!revisarGanador()) gestionarTurno(1);
@@ -418,7 +462,9 @@ document.getElementById("btn_ermi_j2").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ2]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     gestionarTurno(1);
@@ -432,7 +478,9 @@ document.getElementById("btn_ki_j2").addEventListener('click', async () => {
         imageWidth: 250,
         backdrop: ataques[personajeJ2]["color"],
         timer: 1500,
-        showConfirmButton: false
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false
     });
     actualizarBarras();
     gestionarTurno(1);
