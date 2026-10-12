@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRAGON BALL GAME</title>
+    <style>
+        /* configuracion de la imagen de fondo a pantalla completa */
+        /* le puse fixed para que si bajamos la pagina el fondo se quede quieto y no se repita feo */
+        body {
+            background-image: url('./public/img/Arena.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        
+        /* panel semitransparente para que los controles se puedan leer sobre el fondo */
+        /* le meti un rgba con 0.85 de opacidad pa que se alcance a ver tantito el fondo pero el texto sea legible */
+        .panel-registro {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- container mt-4 es de bootstrap paar centrar todo el contenido y que no quede pegado arriba de la pestaña -->
+    <div class="container mt-4">  
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <!-- la sombra del texto  hace que el titulo resalte csin importar de que color sea la imagen de atras -->
+                <h1 class="text-danger fw-bold" style="text-shadow: 3px 3px 5px rgba(0,0,0,0.8);">
+                    <i class="fa-solid fa-dragon me-3"></i>DRAGON BALL GAME<i class="fa-solid fa-dragon ms-3"></i>
+                </h1>
+            </div>
+        </div>
+        
+        <!-- fila de registro de jugadores -->
+        <!-- a este id lo ocupamos en el js para ocultar toda esta seccion cuando ya le dan aceptar los dos -->
+        <div id="registro_juego" class="row justify-content-around mt-4 panel-registro">
+            <div class="col-md-5">
+                <div class="form-floating border border-danger rounded mb-3">
+                    <input type="text" id="input_jugador1" class="form-control" placeholder="Jugador 1">
+                    <label class="text-danger" for="input_jugador1"><i class="fa-solid fa-gamepad me-1"></i>Jugador 1</label>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="form-floating border border-primary rounded mb-3">
+                    <input type="text" id="input_jugador2" class="form-control" placeholder="Jugador 2">
+                    <label class="text-primary" for="input_jugador2"><i class="fa-solid fa-gamepad me-1"></i>Jugador 2</label>
+                </div>
+            </div>
+            
+            <!-- seleccion de personajes -->
+            <div class="row justify-content-around mt-3">
+                
+                <!-- jugador 1 -->
+                <div id="panel_j1" class="col-md-5 text-center">
+                    <p class="text-danger fw-bold mb-2">Seleccionar personaje</p>
+                    <button type="button" class="btn btn-danger w-100 my-2">Aceptar</button>
+                    
+                    <div class="row mt-3">
+                        <!-- personajes jugador 1  -->
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-danger border border-danger p-1" src="./public/img/DB/seleccion/01.png" alt="Veguito">
+                        </div>
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-danger border border-danger p-1" src="./public/img/DB/seleccion/05.png" alt="Goku">
+                        </div>
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-danger border border-danger p-1" src="./public/img/DB/seleccion/06.png" alt="Gohan">
+                        </div>
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-danger border border-danger p-1" src="./public/img/DB/seleccion/03.png" alt="Trunks">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- jugador 2 -->
+                <div id="panel_j2" class="col-md-5 text-center">
+                    <p class="text-primary fw-bold mb-2">Seleccionar personaje</p>
+                    <button type="button" class="btn btn-primary w-100 my-2">Aceptar</button>
+
+                    <div class="row mt-3">
+                        <!-- personajes jugador 2 -->
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-primary border border-primary p-1" src="./public/img/DB/seleccion/02.png" alt="Veguetta">
+                        </div>
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-primary border border-primary p-1" src="./public/img/DB/seleccion/04.png" alt="Pikoro">
+                        </div>
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-primary border border-primary p-1" src="./public/img/DB/seleccion/07.png" alt="Gogueta">
+                        </div>
+                        <div class="col-3">
+                            <img class="img-fluid rounded-circle bg-primary border border-primary p-1" src="./public/img/DB/seleccion/08.png" alt="Cell">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- arena de combate oculta al inicio -->
+        <!-- el d-none es de bootstrap y hace que no se vea al cargar la pagina, en el js se lo quitamos para que aparesca -->
+        <div id="iniciar_juego" class="row d-none mt-5">
+            <!-- panel de combate jugador 1 -->
+            <div id="avatar_j1" class="col-md-5 text-center panel-registro">
+                <div class="d-flex justify-content-center">
+                    <h2 id="nombre_j1" class="text-danger fw-bold ms-3 me-3">JUGADOR 1</h2>
+                </div>
+                <!-- aqui agrupe las barras de progreso para que se vean ordenadas -->
+                <div class="rounded-3 p-3 bg-light border border-danger">
+                    <div class="row mb-2">
+                        <div class="col-3"><p class="text-success fw-bold m-0">VIDA</p></div>
+                        <div class="col-9">
+                            <div class="progress">
+                                <div id="vida_j1" class="progress-bar bg-success" style="width: 100%">100%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-3"><p class="text-primary fw-bold m-0">KI</p></div>
+                        <div class="col-9">
+                            <div class="progress">
+                                <div id="ki_j1" class="progress-bar bg-primary" style="width: 100%">100%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-3"><p class="text-warning fw-bold m-0">ENERGIA</p></div>
+                        <div class="col-9">
+                            <div class="progress">
+                                <div id="energia_j1" class="progress-bar bg-warning" style="width: 100%">100%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- imagen y botones de accion p1 -->
+                <!-- el src de la imagen se llena desde el js dependiendo de a quien escogio -->
+                <img id="imagen_avatar1" class="mx-auto d-block my-3 img-fluid" src="" width="40%">
+                <button id="btn_atk_j1" class="btn btn-primary mb-2 w-100">ATK Basico</button>
+                <button id="btn_esp_j1" class="btn btn-danger mb-2 w-100">ATK Especial</button>
+                <button id="btn_ermi_j1" class="btn btn-success mb-2 w-100">Semilla <span id="se_j1" class="badge bg-warning">2</span></button>
+                <button id="btn_ki_j1" class="btn btn-warning mb-2 w-100">Cargar Poder</button>
+            </div>
+
+            <!-- letrero vs central -->
+            <div id="lucha" class="col-2 text-center align-self-center">
+                <h1 class="display-3 text-light fw-bold" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.9);">VS</h1>
+            </div>
+
+            <!-- panel de combate jugador 2 -->
+            <div id="avatar_j2" class="col-md-5 text-center panel-registro">
+                <div class="d-flex justify-content-center">
+                    <h2 id="nombre_j2" class="text-primary fw-bold ms-3 me-3">JUGADOR 2</h2>
+                </div>
+                <div class="rounded-3 p-3 bg-light border border-primary">
+                    <div class="row mb-2">
+                        <div class="col-3"><p class="text-success fw-bold m-0">VIDA</p></div>
+                        <div class="col-9">
+                            <div class="progress">
+                                <div id="vida_j2" class="progress-bar bg-success" style="width: 100%">100%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-3"><p class="text-primary fw-bold m-0">KI</p></div>
+                        <div class="col-9">
+                            <div class="progress">
+                                <div id="ki_j2" class="progress-bar bg-primary" style="width: 100%">100%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-3"><p class="text-warning fw-bold m-0">ENERGIA</p></div>
+                        <div class="col-9">
+                            <div class="progress">
+                                <div id="energia_j2" class="progress-bar bg-warning" style="width: 100%">100%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- imagen y botones de accion p2 -->
+                <img id="imagen_avatar2" class="mx-auto d-block my-3 img-fluid" src="" width="40%">
+                <button id="btn_atk_j2" class="btn btn-primary mb-2 w-100">ATK Basico</button>
+                <button id="btn_esp_j2" class="btn btn-danger mb-2 w-100">ATK Especial</button>
+                <button id="btn_ermi_j2" class="btn btn-success mb-2 w-100">Semilla <span id="se_j2" class="badge bg-warning">2</span></button>
+                <button id="btn_ki_j2" class="btn btn-warning mb-2 w-100">Cargar Poder</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./bundle.js"></script>
+</body>
+</html>
